@@ -12,6 +12,7 @@
 
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/param.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -244,6 +245,17 @@ char **lsh_split_line(char *line)
   return tokens;
 }
 
+const char* get_current_dir()
+{
+  static char cwd[MAXPATHLEN];
+  if ( getcwd( cwd, sizeof( cwd ) ) != NULL ) {
+    return cwd;
+  } else {
+    perror( "getcwd() error" );
+    return "";
+  }
+}
+
 /**
    @brief Loop getting input and executing it.
  */
@@ -254,7 +266,7 @@ void lsh_loop(void)
   int status;
 
   do {
-    printf("> ");
+    printf("%s> ", get_current_dir());
     line = lsh_read_line();
     args = lsh_split_line(line);
     status = lsh_execute(args);

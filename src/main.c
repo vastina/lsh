@@ -282,8 +282,11 @@ void lsh_loop(void)
    @param argv Argument vector.
    @return status code
  */
+void donothing(int sig) {}
 int main(int argc, char **argv)
 {
+  signal(SIGQUIT, donothing);
+  signal(SIGINT, donothing);
   // Load config files, if any.
 
   // Run command loop.
